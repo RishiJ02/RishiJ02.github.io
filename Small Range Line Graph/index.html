@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!-- CDN FOR LIBRARIES-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <!-- FILE IMPORT -->
+    <script type="text/javascript" src="SBHSData.json"></script>
+    <!-- SETUP -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <title>JSON|LINE GRAPH</title>
+    <!-- PAGE ICON -->
+    <link rel="icon" href="icon.jpg" type="image/jpg">
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template 
+    <link href="css/half-slider.css" rel="stylesheet"> 
+    -->
+
+  </head>
+  <!-- Extra customization -->
+  <style>
+    @font-face { 
+        font-family: Usedfont; src: url('Alien Cyborg.ttf');
+    }
+    body {
+      padding-top: 54px;
+      font-family: Usedfont
+    }
+    @media (min-width: 992px) {
+      body {
+        padding-top: 56px;
+      }
+    }
+    .bg-image-full {
+      background: no-repeat center center scroll;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      background-size: cover;
+      -o-background-size: cover;
+      height: 400px;
+      @media (min-width: 992px) {
+          height: 450px;
+      }
+    }
+    .navbar-nav > li{
+      padding-right:20px;
+      padding-left:10px;
+    }
+    .borderET{
+    border-style: solid;
+    border-width: 3px;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-color: black;
+    }
+  </style>
+
+  <body style="background:url('background.gif'); background-repeat: no-repeat; background-size: 1600px 900px;" onload="checkMinVal()">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#" style="font-size: 33px">JSON</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto, menu" style="font-size: 25px">
+            <li class="nav-item active">
+              <a class="nav-link" href=".." style="color:yellow">HOME
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+          <a class="nav-link" href="#" style="color:red">RANGE LINE GRAPH
+            <span class="sr-only">(current)</span>
+          </a>
+          <a class="nav-link" href="/Complete%20Bar%20Graph/" style="color:green">TOTAL DATA BAR GRAPH
+            <span class="sr-only">(current)</span>
+          </a>
+        
+          </ul>
+        </div>
+      </div>
+      </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+      <div class="row"> 
+          <div class="col-md-12">
+              <div class="card my-4" style="background: url('background.jpg'); background-repeat: no-repeat; background-size: 1100px 800px;">
+                <h5 class="card-header" style="color:black;text-align: center">LINE GRAPH (GRAPH WILL NOT RENDER PROPERLY ON ALL SCREENS)</h5>
+                <div class="card-body">
+                  <!-- CHART IMPORTS -->  
+                  <div id="currentValue" style="color:black;text-align: center"> Current Minimum Value Is 0</div>
+                  <canvas id="LineGraph" width="400" height="200"></canvas>
+                  <div id="MinVal" contenteditable="true" class="borderET" style="color:red;text-align: center">
+                    Input An Index Value To Analyze (MAX INPUT:3029)
+                  </div> 
+                  <button type="button" class="btn btn-primary btn-lg btn-block" onclick="saveMin()" style=" background-color: #000000;color:red;font-size: 17px">SEND INPUT</button>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //Initialization
+        var stringmin = "0"
+        var min = 0;
+        function saveMin() {
+            var editMin = document.getElementById("MinVal")
+            var MinText = editMin.innerHTML
+            localStorage.userEdits = MinText
+            stringmin = MinText
+            min = parseInt(stringmin)
+            if(min>-1 && min<3030){
+                drawGraph()
+                document.getElementById("currentValue").innerHTML="Current Minimum Value Is "+stringmin
+            }
+            else{
+                document.getElementById("currentValue").innerHTML="Input Is Invalid"
+            }
+            console.log(min)
+        }
+        function checkMinVal() {
+            if(localStorage.userEdits!=null)
+                document.getElementById("MinVal").innerHTML = localStorage.userEdits
+        }
+        function drawGraph(){
+        var thedata = ""
+        var thedata = SBHSData
+        var areaArray = []
+        var uptimeArray = [] 
+        var hostnameArray = []
+        var versionArray = []
+        var usedHostnames = []
+        //Getting data to split JSON
+        for (var i = 0; i < thedata.length; i++) {
+            uptimeArray.push(thedata[i].uptime)
+            areaArray.push(thedata[i].area)
+            hostnameArray.push(thedata[i].hostname)
+            versionArray.push(thedata[i].version)
+        }
+        //possible areas = prod, storage, apex, dev,admin, bcloud, inet, corp, feed, 1, tdmz
+        //"" for last one and has 0 uptime
+        var area1 = []
+        var area2 = []
+        var area3 = []
+        var area4 = []
+        var area5 = []
+        var area6 = []
+        var area7 = []
+        var area8 = []
+        var area9 = []
+        var area10 = []
+        var area11 = []
+        for(var i=min;i<min+15;i++){
+            usedHostnames.push(hostnameArray[i])
+        }
+        for (var i=min;i<min+15;i++){
+            if(areaArray[i]==="prod")
+                area1.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="storage")
+                area2.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="apex")
+                area3.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="dev")
+                area4.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="admin")
+                area5.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="bcloud")
+                area6.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="inet")
+                area7.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="corp")
+                area8.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="feed")
+                area9.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="1")
+                area10.push({x: hostnameArray[i],y: uptimeArray[i]})
+            else if(areaArray[i]==="tdmz")
+                area11.push({x: hostnameArray[i],y: uptimeArray[i]})
+        }
+        //Chart Setup
+        var canvas = document.getElementById("LineGraph");
+        var data = {
+            labels: usedHostnames,
+            datasets: [
+                {
+                    label: "Prod",
+                    backgroundColor: "rgba(255,99,132,0.2)",
+                    borderColor: "rgba(255,99,132,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                    hoverBorderColor: "rgba(255,99,132,1)",
+                    data: area1,
+                },
+                {
+                    label: "Storage",
+                    backgroundColor: "rgba(255,255,255,0.2)",
+                    borderColor: "rgba(205,0,255,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(25,9,12,0.4)",
+                    hoverBorderColor: "rgba(25,9,12,1)",
+                    data: area2,
+                },
+                {
+                    label: "Apex",
+                    backgroundColor: "rgba(5,99,1,0.2)",
+                    borderColor: "rgba(2,99,12,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(2,99,12,0.4)",
+                    hoverBorderColor: "rgba(2,99,12,1)",
+                    data: area3,
+                },
+                {
+                    label: "Dev",
+                    backgroundColor: "rgba(0,50,0,0.2)",
+                    borderColor: "rgba(0,50,0,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(0,50,0,0.4)",
+                    hoverBorderColor: "rgba(0,50,0,1)",
+                    data: area4,
+                },
+                {
+                    label: "Storage",
+                    backgroundColor: "rgba(255,255,255,0.2)",
+                    borderColor: "rgba(255,255,255,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(255,255,255,0.4)",
+                    hoverBorderColor: "rgba(255,255,255,1)",
+                    data: area5,
+                },
+                {
+                    label: "Admin",
+                    backgroundColor: "rgba(25,99,132,0.2)",
+                    borderColor: "rgba(25,99,132,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(25,99,132,0.4)",
+                    hoverBorderColor: "rgba(25,99,132,1)",
+                    data: area6,
+                },
+                {
+                    label: "Bcloud",
+                    backgroundColor: "rgba(0,0,225,0.2)",
+                    borderColor: "rgba(0,0,225,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(0,0,225,0.4)",
+                    hoverBorderColor: "rgba(0,0,225,132,1)",
+                    data: area7,
+                },
+                {
+                    label: "Inet",
+                    backgroundColor: "rgba(225,225,0,0.2)",
+                    borderColor: "rgba(225,225,0,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(225,225,0,0.4)",
+                    hoverBorderColor: "rgba(225,225,0,1)",
+                    data: area8,
+                },
+                {
+                    label: "Corp",
+                    backgroundColor: "rgba(225,0,0,0.2)",
+                    borderColor: "rgba(225,0,0,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(225,0,0,0.4)",
+                    hoverBorderColor: "rgba(225,0,0,1)",
+                    data: area9,
+                },
+                {
+                    label: "1",
+                    backgroundColor: "rgba(0,225,225,0.2)",
+                    borderColor: "rgba(0,225,225,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(0,225,225,0.4)",
+                    hoverBorderColor: "rgba(0,225,225,1)",
+                    data: area10,
+                },
+                {
+                    label: "Tdmz",
+                    backgroundColor: "rgba(225,100,0,0.2)",
+                    borderColor: "rgba(225,100,0,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(225,100,0,0.4)",
+                    hoverBorderColor: "rgba(225,100,0,1)",
+                    data: area11,
+                },
+            ]
+        };
+        var option = {
+            animation: {
+                duration:5000
+            },
+            title: {
+                display: true,
+                text: "Uptime By Hostname Split Into Areas",
+                fontColor: "black",
+                fontFamily: "Comic Sans MS",
+                fontSize: 25
+            },
+            legend: {
+                labels: {
+                    fontColor: "black",
+                    fontFamily: "Comic Sans MS",
+                    fontSize: 15
+                }
+            },
+            scales: {
+                xAxes:[{
+                    ticks:{
+                        fontColor: "black",
+                        fontFamily: "Comic Sans MS",
+                        fontSize: 15
+                    }
+                }],
+                yAxes:[{
+                    ticks:{
+                        fontColor: "black",
+                        fontFamily: "Comic Sans MS",
+                        fontSize: 15
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                  label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    var version = "";
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.xLabel===hostnameArray[i])
+                            version=versionArray[i]
+                    }
+                    label += tooltipItem.yLabel+" Version: "+version;
+                    return label;
+                }
+                }
+              }
+            };
+            var myLineChart = new Chart(canvas, {
+                type: "line",
+                data: data,
+                options: option
+            });
+        }
+        drawGraph();
+      </script>    
+              
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">1A Rishi Jammalamaka </p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  </body>
+
+</html>

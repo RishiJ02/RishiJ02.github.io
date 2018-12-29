@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!-- CDN FOR LIBRARIES-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <!-- FILE IMPORT -->
+    <script type="text/javascript" src="SBHSData.json"></script>
+    <!-- SETUP -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <title>JSON|BAR GRAPH</title>
+    <!-- PAGE ICON -->
+    <link rel="icon" href="icon.jpg" type="image/jpg">
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template 
+    <link href="css/half-slider.css" rel="stylesheet"> 
+    -->
+
+  </head>
+  <!-- Extra customization -->
+  <style>
+    @font-face { 
+        font-family: Usedfont; src: url('Alien Cyborg.ttf');
+    }
+    body {
+      padding-top: 54px;
+      font-family: Usedfont
+    }
+    @media (min-width: 992px) {
+      body {
+        padding-top: 56px;
+      }
+    }
+    .bg-image-full {
+      background: no-repeat center center scroll;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      background-size: cover;
+      -o-background-size: cover;
+      height: 400px;
+      @media (min-width: 992px) {
+          height: 450px;
+      }
+    }
+    .navbar-nav > li{
+      padding-right:20px;
+      padding-left:10px;
+    }
+    .borderET{
+    border-style: solid;
+    border-width: 3px;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-color: black;
+    }
+  </style>
+
+  <body style="background:url('background.gif'); background-repeat: repeat; background-size: 1600px 900px;">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#" style="font-size: 33px">JSON</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto, menu" style="font-size: 25px">
+            <li class="nav-item active">
+              <a class="nav-link" href=".." style="color:yellow">HOME
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+          <a class="nav-link" href="/Small%20Range%20Line%20Graph/" style="color:red">RANGE LINE GRAPH
+            <span class="sr-only">(current)</span>
+          </a>
+          <a class="nav-link" href="#" style="color:green">TOTAL DATA BAR GRAPH
+            <span class="sr-only">(current)</span>
+          </a>
+          </ul>
+        </div>
+      </div>
+      </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+      <div class="row"> 
+          <div class="col-md-12">
+              <div class="card my-4" style="background: url('background.jpg'); background-repeat:repeat; background-size: 1100px 8000px;">
+                <h5 class="card-header" style="color:black;text-align: center">BAR GRAPH (GRAPH MAY NOT RENDER PROPERLY ON ALL SCREENS)</h5>
+                <div class="card-body">
+                  <canvas id="BarGraphP1" width="400" height="5000"></canvas>
+                  <canvas id="BarGraphP2" width="400" height="5000"></canvas>
+                  <canvas id="BarGraphP3" width="400" height="5000"></canvas>
+                  <canvas id="BarGraphP4" width="400" height="5000"></canvas>
+                  <canvas id="BarGraphP5" width="400" height="5000"></canvas>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //Initialization
+        var thedata = SBHSData
+        var areaArray = []
+        var uptimeArray = [] 
+        var hostnameArray = []
+        var versionArray = []
+        var areaArray1 = []
+        var uptimeArray1 = [] 
+        var hostnameArray1 = []
+        var versionArray1 = []
+        var areaArray2 = []
+        var uptimeArray2 = [] 
+        var hostnameArray2 = []
+        var versionArray2 = []
+        var areaArray3 = []
+        var uptimeArray3 = [] 
+        var hostnameArray3 = []
+        var versionArray3 = []
+        var areaArray4 = []
+        var uptimeArray4 = [] 
+        var hostnameArray4 = []
+        var versionArray4 = []
+        var areaArray5 = []
+        var uptimeArray5 = [] 
+        var hostnameArray5 = []
+        var versionArray5 = []
+        console.log(thedata)
+        for (var i = 0; i < thedata.length; i++) {
+            uptimeArray.push(thedata[i].uptime)
+            areaArray.push(thedata[i].area)
+            hostnameArray.push(thedata[i].hostname)
+            versionArray.push(thedata[i].version)
+        }
+        //Getting data to split JSON
+        for (var i = 0; i < 610; i++) {
+            uptimeArray1.push(uptimeArray[i])
+            areaArray1.push(areaArray[i])
+            hostnameArray1.push(hostnameArray[i])
+            versionArray1.push(versionArray[i])
+        }
+        //Chart Setup
+        var canvas1 = document.getElementById("BarGraphP1");
+        var canvas2 = document.getElementById("BarGraphP2");
+        var canvas3 = document.getElementById("BarGraphP3");
+        var canvas4 = document.getElementById("BarGraphP4");
+        var canvas5 = document.getElementById("BarGraphP5");
+        var data1 = {
+            labels: hostnameArray1,
+            datasets: [
+                {
+                    label:"Uptime",
+                    backgroundColor: "rgba(250,0,0,0.2)",
+                    borderColor: "rgba(0,0,0,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(250,125,0,0.4)",
+                    hoverBorderColor: "rgba(0,0,255,1)",
+                    data: uptimeArray1,
+                },
+            ]
+        };
+        var option1 = {
+            animation: {
+                duration:0
+            },
+            legend: {
+                labels: {
+                    fontColor: "black",
+                    fontFamily: "Comic Sans MS",
+                    fontSize: 15
+                }
+            },
+            title: {
+                display: true,
+                text: "Uptime By Hostname All Data Included",
+                fontColor: "black",
+                fontFamily: "Comic Sans MS",
+                fontSize: 25
+            },
+            scales: {
+                xAxes:[{
+                    ticks:{
+                        fontColor: "black",
+                        fontFamily: "Comic Sans MS",
+                        fontSize: 15
+                    }
+                }],
+                yAxes:[{
+                    ticks:{
+                        fontColor: "black",
+                        fontFamily: "Comic Sans MS",
+                        fontSize: 14
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                  label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    var version = "";
+                    var area = "";
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.xLabel===hostnameArray[i])
+                            version=versionArray[i]
+                        if(tooltipItem.datasetIndex==0)
+                            area="prod"
+                        if(tooltipItem.datasetIndex==1)
+                            area="storage"
+                        if(tooltipItem.datasetIndex==2)
+                            area="apex"
+                        if(tooltipItem.datasetIndex==3)
+                            area="dev"
+                        if(tooltipItem.datasetIndex==4)
+                            area="admin"
+                        if(tooltipItem.datasetIndex==5)
+                            area="bcloud"
+                        if(tooltipItem.datasetIndex==6)
+                            area="inet"
+                        if(tooltipItem.datasetIndex==7)
+                            area="corp"
+                        if(tooltipItem.datasetIndex==8)
+                            area="feed"
+                        if(tooltipItem.datasetIndex==9)
+                            area="1"
+                        if(tooltipItem.datasetIndex==10)
+                            area="tdmz"
+                    }
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.yLabel===hostnameArray[i])
+                            version=versionArray[i]
+                    }
+                    label += tooltipItem.xLabel+" Area: "+area+" Version: "+version;
+                    return label;
+                }
+                }
+              }
+        };
+        var myBarChart1 = new Chart(canvas1, {
+            type: "horizontalBar",
+            data: data1,
+            options: option1
+        });
+        for (var i = 610; i < 2*610; i++) {
+            uptimeArray2.push(uptimeArray[i])
+            areaArray2.push(areaArray[i])
+            hostnameArray2.push(hostnameArray[i])
+            versionArray2.push(versionArray[i])
+        }
+        var data2 = {
+            labels: hostnameArray2,
+            datasets: [
+                {
+                    label:"Uptime",
+                    backgroundColor: "rgba(250,0,0,0.2)",
+                    borderColor: "rgba(0,0,0,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(250,125,0,0.4)",
+                    hoverBorderColor: "rgba(0,0,255,1)",
+                    data: uptimeArray2,
+                },
+            ]
+        };
+        var option2 = {
+            animation: {
+                duration:0
+            },
+            legend: {
+                display: false
+            },
+            scales: {
+                xAxes:[{
+                    ticks:{
+                    display:false
+                    }
+                }],
+                yAxes:[{
+                    ticks:{
+                        fontColor: "black",
+                        fontFamily: "Comic Sans MS",
+                        fontSize: 14
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                  label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    var version = "";
+                    var area = "";
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.xLabel===hostnameArray[i])
+                            version=versionArray[i]
+                        if(tooltipItem.datasetIndex==0)
+                            area="prod"
+                        if(tooltipItem.datasetIndex==1)
+                            area="storage"
+                        if(tooltipItem.datasetIndex==2)
+                            area="apex"
+                        if(tooltipItem.datasetIndex==3)
+                            area="dev"
+                        if(tooltipItem.datasetIndex==4)
+                            area="admin"
+                        if(tooltipItem.datasetIndex==5)
+                            area="bcloud"
+                        if(tooltipItem.datasetIndex==6)
+                            area="inet"
+                        if(tooltipItem.datasetIndex==7)
+                            area="corp"
+                        if(tooltipItem.datasetIndex==8)
+                            area="feed"
+                        if(tooltipItem.datasetIndex==9)
+                            area="1"
+                        if(tooltipItem.datasetIndex==10)
+                            area="tdmz"
+                    }
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.yLabel===hostnameArray[i])
+                            version=versionArray[i]
+                    }
+                    label += tooltipItem.xLabel+" Area: "+area+" Version: "+version;
+                    return label;
+                }
+                }
+              }
+        }
+        var myBarChart2 = new Chart(canvas2, {
+            type: "horizontalBar",
+            data: data2,
+            options: option2
+        });
+        //610 is data.length/5
+        for (var i = 2*610; i < 3*610; i++) {
+            uptimeArray3.push(uptimeArray[i])
+            areaArray3.push(areaArray[i])
+            hostnameArray3.push(hostnameArray[i])
+            versionArray3.push(versionArray[i])
+        }
+        var data3 = {
+            labels: hostnameArray3,
+            datasets: [
+                {
+                    label:"Uptime",
+                    backgroundColor: "rgba(250,0,0,0.2)",
+                    borderColor: "rgba(0,0,0,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(250,125,0,0.4)",
+                    hoverBorderColor: "rgba(0,0,255,1)",
+                    data: uptimeArray3,
+                },
+            ]
+        };
+        var option3 = {
+            animation: {
+                duration:0
+            },
+            legend: {
+                display: false
+            },
+            scales: {
+                xAxes:[{
+                    ticks:{
+                    display:false
+                    }
+                }],
+                yAxes:[{
+                    ticks:{
+                        fontColor: "black",
+                        fontFamily: "Comic Sans MS",
+                        fontSize: 14
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                  label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    var version = "";
+                    var area = "";
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.xLabel===hostnameArray[i])
+                            version=versionArray[i]
+                        if(tooltipItem.datasetIndex==0)
+                            area="prod"
+                        if(tooltipItem.datasetIndex==1)
+                            area="storage"
+                        if(tooltipItem.datasetIndex==2)
+                            area="apex"
+                        if(tooltipItem.datasetIndex==3)
+                            area="dev"
+                        if(tooltipItem.datasetIndex==4)
+                            area="admin"
+                        if(tooltipItem.datasetIndex==5)
+                            area="bcloud"
+                        if(tooltipItem.datasetIndex==6)
+                            area="inet"
+                        if(tooltipItem.datasetIndex==7)
+                            area="corp"
+                        if(tooltipItem.datasetIndex==8)
+                            area="feed"
+                        if(tooltipItem.datasetIndex==9)
+                            area="1"
+                        if(tooltipItem.datasetIndex==10)
+                            area="tdmz"
+                    }
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.yLabel===hostnameArray[i])
+                            version=versionArray[i]
+                    }
+                    label += tooltipItem.xLabel+" Area: "+area+" Version: "+version;
+                    return label;
+                }
+                }
+              }
+        };
+        var myBarChart3 = new Chart(canvas3, {
+            type: "horizontalBar",
+            data: data3,
+            options: option3
+        });
+        for (var i = 3*610; i < 4*610; i++) {
+            uptimeArray4.push(uptimeArray[i])
+            areaArray4.push(areaArray[i])
+            hostnameArray4.push(hostnameArray[i])
+            versionArray4.push(versionArray[i])
+        }
+        var data4 = {
+            labels: hostnameArray4,
+            datasets: [
+                {
+                    label:"Uptime",
+                    backgroundColor: "rgba(250,0,0,0.2)",
+                    borderColor: "rgba(0,0,0,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(250,125,0,0.4)",
+                    hoverBorderColor: "rgba(0,0,255,1)",
+                    data: uptimeArray4,
+                },
+            ]
+        };
+        var option4 = {
+            animation: {
+                duration:0
+            },
+            legend: {
+                display: false
+            },
+            scales: {
+                xAxes:[{
+                    display:false
+                }],
+                yAxes:[{
+                    ticks:{
+                        fontColor: "black",
+                        fontFamily: "Comic Sans MS",
+                        fontSize: 14
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                  label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    var version = "";
+                    var area = "";
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.xLabel===hostnameArray[i])
+                            version=versionArray[i]
+                        if(tooltipItem.datasetIndex==0)
+                            area="prod"
+                        if(tooltipItem.datasetIndex==1)
+                            area="storage"
+                        if(tooltipItem.datasetIndex==2)
+                            area="apex"
+                        if(tooltipItem.datasetIndex==3)
+                            area="dev"
+                        if(tooltipItem.datasetIndex==4)
+                            area="admin"
+                        if(tooltipItem.datasetIndex==5)
+                            area="bcloud"
+                        if(tooltipItem.datasetIndex==6)
+                            area="inet"
+                        if(tooltipItem.datasetIndex==7)
+                            area="corp"
+                        if(tooltipItem.datasetIndex==8)
+                            area="feed"
+                        if(tooltipItem.datasetIndex==9)
+                            area="1"
+                        if(tooltipItem.datasetIndex==10)
+                            area="tdmz"
+                    }
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.yLabel===hostnameArray[i])
+                            version=versionArray[i]
+                    }
+                    label += tooltipItem.xLabel+" Area: "+area+" Version: "+version;
+                    return label;
+                }
+                }
+              }
+        };
+        var myBarChart4 = new Chart(canvas4, {
+            type: "horizontalBar",
+            data: data4,
+            options: option4
+        });
+        for (var i = 4*610; i < thedata.length; i++) {
+            uptimeArray5.push(uptimeArray[i])
+            areaArray5.push(areaArray[i])
+            hostnameArray5.push(hostnameArray[i])
+            versionArray5.push(versionArray[i])
+        }
+        var data5 = {
+            labels: hostnameArray5,
+            datasets: [
+                {
+                    label:"Uptime",
+                    backgroundColor: "rgba(250,0,0,0.2)",
+                    borderColor: "rgba(0,0,0,1)",
+                    borderWidth: 2,
+                    hoverBackgroundColor: "rgba(250,125,0,0.4)",
+                    hoverBorderColor: "rgba(0,0,255,1)",
+                    data: uptimeArray5,
+                },
+            ]
+        };
+        var option5 = {
+            animation: {
+                duration:0
+            },
+            legend: {
+                display: false
+            },
+            scales: {
+                xAxes:[{
+                    ticks:{
+                        display: false
+                    }
+                }],
+                yAxes:[{
+                    ticks:{
+                        fontColor: "black",
+                        fontFamily: "Comic Sans MS",
+                        fontSize: 14
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                  label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    var version = "";
+                    var area = "";
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.xLabel===hostnameArray[i])
+                            version=versionArray[i]
+                        if(tooltipItem.datasetIndex==0)
+                            area="prod"
+                        if(tooltipItem.datasetIndex==1)
+                            area="storage"
+                        if(tooltipItem.datasetIndex==2)
+                            area="apex"
+                        if(tooltipItem.datasetIndex==3)
+                            area="dev"
+                        if(tooltipItem.datasetIndex==4)
+                            area="admin"
+                        if(tooltipItem.datasetIndex==5)
+                            area="bcloud"
+                        if(tooltipItem.datasetIndex==6)
+                            area="inet"
+                        if(tooltipItem.datasetIndex==7)
+                            area="corp"
+                        if(tooltipItem.datasetIndex==8)
+                            area="feed"
+                        if(tooltipItem.datasetIndex==9)
+                            area="1"
+                        if(tooltipItem.datasetIndex==10)
+                            area="tdmz"
+                    }
+                    for(var i =0; i<thedata.length;i++){
+                        if(tooltipItem.yLabel===hostnameArray[i])
+                            version=versionArray[i]
+                    }
+                    label += tooltipItem.xLabel+" Area: "+area+" Version: "+version;
+                    return label;
+                }
+                }
+              }
+        };
+        var myBarChart5 = new Chart(canvas5, {
+            type: "horizontalBar",
+            data: data5,
+            options: option5
+        });
+      </script>    
+              
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">1A Rishi Jammalamaka </p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  </body>
+
+</html>
